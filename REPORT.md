@@ -35,10 +35,22 @@ Mikolov等人[3]提出了Word2Vec等词向量模型，能够比较好的解决�
 
 <img src="assets/Precisionrecall.svg.png" width=30%>
 
+<<<<<<< HEAD
 <img src="assets/precision.gif" width=20%>
 <img src="assets/recall.gif" width=20%>
 <img src="assets/accurary.gif" width=20%>
 <img src="assets/f1.gif" width=20%>
+||||||| merged common ancestors
+$$ Precision = \frac{tp}{tp + fp}$$
+$$ Recall = \frac{tp}{tp + fn}$$
+$$ Accuracy = \frac{tp + tn}{tp + tn + fp + fn}$$
+$$ F = 2 \cdot \frac{precision \cdot recall}{precision + recall}$$
+=======
+<img src="assets/precision.gif" width=20%>
+$$ Recall = \frac{tp}{tp + fn}$$
+$$ Accuracy = \frac{tp + tn}{tp + tn + fp + fn}$$
+$$ F = 2 \cdot \frac{precision \cdot recall}{precision + recall}$$
+>>>>>>> 6e9a46444137ae7928004e619a410296e2fae3e0
 
 其中：
 * tp：若一个实例是正类，被预测成为正类，即为真正类(True Postive TP)
