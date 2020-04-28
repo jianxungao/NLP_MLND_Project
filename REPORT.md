@@ -233,7 +233,7 @@ BERT的作者建议微调的超参数(Appendix A.3，BERT paper):
 - epochs = 4, 
 - max_seq_len = 128 or 256
 
-<img src="assets/bert_train.png" width=40%>
+<img src="assets/bert_train.png" width=55%>
 
 比较RoBERTa模型：调优参数：
 - Batch size = 8, 
