@@ -181,14 +181,11 @@ BERT在训练语言模型上使用屏蔽[MASK] Token, 最简单的方法是用[M
 
 训练集，验证集，测试集分割如下：
 * 模型在训练集上进行训练，在验证集是查看训练的效果。训练好的模型在测试集查看模型的泛化能力。
-* LSTM建模，
+* 1)LSTM建模，2)BERT预训练模型迁移学习，
     * 训练集 1600
     * 验证集 200
     * 测试集 200
-* BERT预训练模型迁移学习，
-    * 训练集 1620
-    * 验证集 180
-    * 测试集 200
+
 
 ### 执行过程
 
@@ -206,6 +203,11 @@ LSTM建模
 
 BERT预训练模型
 
+预训练模型[Ref](https://huggingface.co/transformers/pretrained_models.html)
+
+- bert-base-chinese: 12-layer, 768-hidden, 12-heads, 110M parameters.
+- hfl/chinese-roberta-wwm-ext RoBERTa has the same architecture as BERT [Ref](https://huggingface.co/hfl/chinese-roberta-wwm-ext)
+
 使用Fastai[15] 作为训练框架。Fastai使用 Spacy Tokenizer作为底层库。不适于中文的处理，需要重新定义一个新的BertFastaiTokenizer，来替换Spacy。另外，在每一句话前后，根据 BERT的要求，加入起始的[CLS]和结束位置的[SEP]，这两个特殊Token 。
 
 <img src="assets/tokenizer.png" width=80%>
@@ -218,15 +220,36 @@ BERT预训练模型
 
 <img src="assets/learning_rate.png" width=60%>
 
-训练过程如下
+BERT的作者建议微调的超参数(Appendix A.3，BERT paper):
 
-<img src="assets/training.png" width=40%>
+- Batch size: 16, 32
+- 学习率(Adam): 5e-5, 3e-5, 2e-5
+- epochs: 2, 3, 4
+
+训练过程如下，Fastai的训练策略，1cycle policy：选用
+
+- Batch size = 32, 
+- 学习率 = 2e-5， 
+- epochs = 4, 
+- max_seq_len = 128 or 256
+
+<img src="assets/bert_train.png" width=40%>
+
+比较RoBERTa模型：调优参数：
+- Batch size = 8, 
+- 学习率 = 1e-5， 
+- epochs = 10, 
+- max_seq_len = 128 or 256
+
+<img src="assets/roberta_train.png" width=40%>
 
 
 ### 完善
 
 1. LSTM cell可以用双向 biLSTM cell替代。
 2. 在LSTM模型中超参数`embedding_dim`， `hidden_dim`。可以微调这两个参数进行训练查看测试效果。
+3. 硬件资源条件允许下，尝试GPT，XLNet large，(voidful/albert_chinese_xlarge), large-bert.
+
 
 
 ## IV. 结果
@@ -238,9 +261,9 @@ LSTM模型结果如下
 <img src="assets/result_lstm.png" width=50%>
 
 
-BERT预训练模型结果如下
+BERT和RoBERTa预训练模型结果如下
 
-<img src="assets/result_bert.png" width=50%>
+<img src="assets/test_results.png" width=50%>
 
 
 ### 合理性分析
@@ -252,8 +275,9 @@ LSTM对于*“这家的环境不差，但是菜不怎么好吃。”*前部分�
 <img src="assets/ref_lstm.png" width=60%>
 
 BERT对于*“这家的环境不差，但是菜不怎么好吃。”*前部分正向，后部分负向比较复杂的情感判断，有总体的判断。
+BERT和RoBERTa旗鼓相当。（RoBERTa训练时间更长）
 
-<img src="assets/ref_bert.png" width=50%>
+<img src="assets/results_analysis.png" width=50%>
 
 ## V. 项目结论
 
@@ -304,3 +328,4 @@ BERT对于*“这家的环境不差，但是菜不怎么好吃。”*前部分�
 17. Hugging Face https://github.com/huggingface/transformers
 18. 王树义 [如何在fast.ai用BERT做中文文本分类](http://blog.sciencenet.cn/blog-377709-1191558.html)
 19. Sebastain Ruder [NLP's ImageNet moment has arrived](https://thegradient.pub/nlp-imagenet/)
+20. Yinhan Liu et al.,[RoBERTa: A Robustly Optimized BERT Pretraining Approach](https://arxiv.org/abs/1907.11692)
